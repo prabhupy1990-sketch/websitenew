@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leontra Global | Bridging Vision and Reality</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Scroll Reveal Base Classes */
+        .animate-fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.21, 0.6, 0.35, 1), 
+                        transform 1s cubic-bezier(0.21, 0.6, 0.35, 1);
+            will-change: transform, opacity;
+        }
+
+        /* Support for delay prop from React components */
+        .animate-fade-up[style*="animation-delay"] {
+            transition-delay: var(--delay, 0ms);
+        }
+
+        .animate-fade-up.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <div id="root"></div>
+
+    <script>
+        // Global Intersection Observer for Scroll Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Capture animation delay and convert to transition delay if it exists
+                        const style = entry.target.getAttribute('style');
+                        if (style && style.includes('animation-delay')) {
+                            const delayValue = style.split('animation-delay:')[1].split(';')[0].trim();
+                            entry.target.style.setProperty('--delay', delayValue);
+                        }
+                        
+                        entry.target.classList.add('in-view');
+                        // Optional: Unobserve if you only want it to happen once
+                        // revealObserver.unobserve(entry.target);
+                    } else {
+                        // Optional: Remove class to re-trigger animation when scrolling back up
+                        // entry.target.classList.remove('in-view');
+                    }
+                });
+            }, { 
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px' // Trigger slightly before it enters fully
+            });
+
+            // Target all elements with the animation class
+            const observeElements = () => {
+                document.querySelectorAll('.animate-fade-up').forEach(el => {
+                    revealObserver.observe(el);
+                });
+            };
+
+            // Initial observation
+            observeElements();
+
+            // Observe dynamic elements if React adds them later
+            const mutationObserver = new MutationObserver(() => {
+                observeElements();
+            });
+            mutationObserver.observe(document.getElementById('root'), { childList: true, subtree: true });
+        });
+    </script>
+</body>
+</html>

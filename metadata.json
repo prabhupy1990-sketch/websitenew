@@ -1,0 +1,8 @@
+{
+  "name": "Leontra Global Consulting",
+  "description": "A high-end, professional business consulting and investment advisory website clone featuring a sleek UI, responsive design, and an AI-powered Strategy Advisor.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
